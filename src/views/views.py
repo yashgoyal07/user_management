@@ -1,9 +1,7 @@
 import coloredlogs
 import logging
-import json
 from application import app
-from pprint import pprint as pp
-from flask import request
+from flask import request, jsonify
 from validation.user_detail_schema import UserDetailSchema
 from controllers.user_details_controller import UserDetailsController
 from marshmallow import ValidationError
@@ -17,22 +15,32 @@ def home():
     return 'Welcome'
 
 
-@app.route('/set_user_details', methods=['POST', 'GET'])
-def set_user_details():
+@app.route('/user', methods=['POST', 'GET'])
+def user():
     if request.method == 'POST':
+        response = {
+            "status": "OK",
+        }
         try:
             user_data = request.get_json()
             user_data = UserDetailSchema().load(user_data)
             user_obj = UserDetailsController()
             user_obj.create_user(user_data=user_data)
-            return 'OK'
         except ValidationError as err:
             logging.error(err)
-            return "ValidationError"
+            response = {
+                "status": "FAILED",
+                "comment": "{err}".format(err=err)
+            }
         except Exception as err:
             logging.error(f'Error coming from set_user_details due to {err}')
-            return "ExceptionError"
-    return 'Please use POST method to send sensitive information.'
+            response = {
+                "status": "FAILED",
+                "comment": "Something Went Wrong!"
+            }
+        finally:
+            return response
+    return 'New Methods will be created'
 
 
 @app.route('/get_user_details')
