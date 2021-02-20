@@ -42,20 +42,22 @@ class PaymentInfoSchema(Schema):
 
 class UserDetailSchema(Schema):
     user_id = fields.Str(required=True, validate=validate.Length(max=100))
-    name = fields.Str(validate=validate.Length(max=100),missing=None)
+    name = fields.Str(validate=validate.Length(max=100), missing=None)
     email = fields.Email(required=True)
-    sex = fields.Str(validate=validate.OneOf(["male", "female", "other"]),missing=None)
+    sex = fields.Str(validate=validate.OneOf(["male", "female", "other"]), missing=None)
     dob = fields.Str(validate=validate_date, missing=None)
-    country_code = fields.Str(validate=validate.Length(max=20),missing=None)
-    mobile = fields.Str(validate=validate_mobile,missing=None)
-    # billing_address = fields.Nested(AddressSchema)
-    # delivery_address = fields.Nested(AddressSchema)
-    # payment_info = fields.Nested(PaymentInfoSchema)
-    tags = fields.List(fields.Str(),missing=[])
+    country_code = fields.Str(validate=validate.Length(max=20), missing=None)
+    mobile = fields.Str(validate=validate_mobile, missing=None)
+    billing_address = fields.Nested(AddressSchema, missing={})
+    delivery_address = fields.Nested(AddressSchema, missing={})
+    payment_info = fields.Nested(PaymentInfoSchema, missing={})
+    latest_order_id = fields.Str(validate=validate.Length(max=100), missing=None)
+    tags = fields.List(fields.Str(), missing=[])
 
     @post_load
     def dict_to_json(self, data, **kwargs):
-        data['tags'] = json.dumps(data['tags'])
+        for column in ['tags', 'billing_address', 'delivery_address', 'payment_info', 'latest_order_id']:
+            data[column] = json.dumps(data[column])
         return data
 
     class Meta:

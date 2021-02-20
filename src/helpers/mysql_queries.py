@@ -7,7 +7,7 @@ CREATE_USER_QUERY_TEMPLATE = INSERT_DATA_QUERY_TEMPLATE \
             TABLE_NAME=MysqlConfig.USER_TABLE_NAME
             )
 
-CREATE_USER_QUERY = CREATE_USER_QUERY_TEMPLATE + """({columns}) VALUES({params})"""
+CREATE_USER_QUERY = CREATE_USER_QUERY_TEMPLATE + """({columns}) VALUES({params}) ON DUPLICATE KEY UPDATE"""
 
 CREATE_USER_TABLE = """CREATE TABLE `user` (
   `user_id` varchar(100) NOT NULL,
@@ -18,6 +18,10 @@ CREATE_USER_TABLE = """CREATE TABLE `user` (
   `country_code` varchar(20) DEFAULT NULL,
   `mobile` varchar(20) DEFAULT NULL,
   `tags` json DEFAULT NULL,
+  `delivery_address` json DEFAULT NULL,
+  `billing_address` json DEFAULT NULL,
+  `payment_info` json DEFAULT NULL,
+  `latest_order_id` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 """
