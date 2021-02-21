@@ -1,6 +1,7 @@
 from marshmallow import Schema, fields, ValidationError, \
-    validate,validates_schema,post_load
+    validate, post_load
 import json
+from datetime import datetime
 
 
 def validate_mobile(n):
@@ -10,29 +11,26 @@ def validate_mobile(n):
         raise ValidationError('mobile number must be numeric')
 
 
-def validate_date(n):
-    date_list = list(map(int, n.split('-')))
-    if not 1000 <= date_list[0] <= 9999:
-        raise ValidationError('Date must be between range 1000-01-01 to 9999-12-31')
-    if not 1 <= date_list[1] <= 12:
-        raise ValidationError('Date must be between range 1000-01-01 to 9999-12-31')
-    if not 1 <= date_list[2] <= 31:
-        raise ValidationError('Date must be between range 1000-01-01 to 9999-12-31')
+def validate_date(date_str):
+    try:
+        datetime.strptime(date_str, '%Y-%m-%d')
+    except Exception:
+        raise ValidationError('date must be valid')
 
 
 class AddressSchema(Schema):
-    name = fields.Str(validate=validate.Length(max=100))
-    country_code = fields.Str(validate=validate.Length(max=20))
+    name = fields.Str(validate=validate.Length(min=1))
+    country_code = fields.Str(validate=validate.Length(min=1))
     mobile_number = fields.Str(validate=validate_mobile)
     email = fields.Email()
-    address_line_1 = fields.Str(required=True, validate=validate.Length(max=200))
-    address_line_2 = fields.Str(validate=validate.Length(max=200))
-    landmark = fields.Str(validate=validate.Length(max=200))
-    city = fields.Str(required=True, validate=validate.Length(max=100))
-    district = fields.Str(required=True, validate=validate.Length(max=100))
-    state = fields.Str(required=True, validate=validate.Length(max=100))
-    country = fields.Str(required=True, validate=validate.Length(max=100))
-    pincode = fields.Str(required=True, validate=validate.Length(max=20))
+    address_line_1 = fields.Str(required=True, validate=validate.Length(min=1))
+    address_line_2 = fields.Str(validate=validate.Length(min=1))
+    landmark = fields.Str(validate=validate.Length(min=1))
+    city = fields.Str(required=True, validate=validate.Length(min=1))
+    district = fields.Str(required=True, validate=validate.Length(min=1))
+    state = fields.Str(required=True, validate=validate.Length(min=1))
+    country = fields.Str(required=True, validate=validate.Length(min=1))
+    pincode = fields.Str(required=True, validate=validate.Length(min=1))
 
 
 class PaymentInfoSchema(Schema):
@@ -64,3 +62,9 @@ class UserDetailSchema(Schema):
         unknown = 'EXCLUDE'
 
 
+class UserGetDataSchema(Schema):
+    user_id = fields.Str(required=True, validate=validate.Length(max=100))
+    columns = fields.List(fields.Str(), missing=[])
+
+    class Meta:
+        unknown = 'EXCLUDE'

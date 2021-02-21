@@ -38,5 +38,17 @@ class MysqlModel(object):
                 conn.close()
 
     # for data-query language commands
-    def dql_cmd(self):
-        pass
+    def dql_queries(self, query, query_params):
+        conn = None
+        try:
+            conn = self.get_connection()
+            cur = conn.cursor(dictionary=True)
+            cur.execute(query, query_params)
+            result = cur.fetchall()
+            return result or []
+        except Exception as err:
+            logging.error(f'Error from dql_queries due to {err}')
+            raise
+        finally:
+            if conn:
+                conn.close()
