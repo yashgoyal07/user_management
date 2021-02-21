@@ -2,7 +2,7 @@ import coloredlogs
 import logging
 import json
 from models.mysql_model import MysqlModel
-from helpers.mysql_queries import CREATE_USER_QUERY, GET_USER_DETAILS
+from helpers.mysql_queries import *
 from configs.mysql_config import MysqlConfig
 from datetime import datetime
 
@@ -42,33 +42,55 @@ class UserDetailsController(object):
 
     def get_user_details(self, request_data=None):
         try:
-            print(request_data)
             if not request_data:
                 request_data = {}
 
+            request_user_ids = (request_data.get('filters', {})).get('user_ids', [])
+
+            request_dob_start_date = ((request_data.get('filters', {})).get('dob', {})).get('start_date', "")
+
+            request_dob_end_date = ((request_data.get('filters', {})).get('dob', {})).get('end_date', "")
+
             user_column_list = MysqlConfig.TABLES_MAPPING[MysqlConfig.USER_TABLE_NAME]["columns"]
 
-            final_column_list = []
-            for column in user_column_list:
-                if column in request_data.get('columns'):
-                    final_column_list.append(column)
+            valid_required_props = []
+            for prop in request_data.get('properties'):
+                if prop in user_column_list:
+                    valid_required_props.append(prop)
 
-            columns = ','.join(final_column_list)
-            query = GET_USER_DETAILS.format(columns=columns)
-            logging.info(f"query = {query}")
-            result = self.mysql_model_obj.dql_queries(query=query, query_params=(request_data.get('user_id'),))
-            print(result)
-            if len(result) > 0:
-                result = result[0]
-                for key, value in result.items():
+            if 'user_id' not in valid_required_props:
+                valid_required_props.append('user_id')
+
+            columns = ",".join(valid_required_props)
+
+            query = GET_USER_DATA_QUERY.format(columns=columns)
+
+            where_clause = []
+
+            if request_user_ids:
+                users_params = "'" + "','".join((request_data.get('filters')).get('user_ids')) + "'"
+                where_clause.append(" user_id IN ({})".format(users_params))
+
+            if request_dob_start_date and request_dob_end_date:
+                where_clause.append("dob BETWEEN '{}' AND '{}'".format(request_dob_start_date, request_dob_end_date))
+
+            if len(where_clause) > 0:
+                query += " WHERE "
+                query += " AND ".join(where_clause)
+
+            users_data = MysqlModel().dql_queries(query=query)
+            print(query)
+            for user in users_data:
+                for key, value in user.items():
                     try:
                         if isinstance(value, datetime):
-                            result[key] = datetime.strftime(value, '%Y-%m-%d')
+                            user[key] = datetime.strftime(value, '%Y-%m-%d')
                         else:
-                            result[key] = json.loads(value)
+                            user[key] = json.loads(value)
                     except Exception:
                         pass
-            return result
+
+            return users_data
         except Exception as err:
             logging.error(f'Error coming from get_user_details due to {err}')
             raise

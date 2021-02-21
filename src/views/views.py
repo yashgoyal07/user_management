@@ -48,7 +48,7 @@ def user():
         response = {}
         try:
             request_params = request.get_json()
-            UserGetDataSchema().load(request_params)
+            request_params = UserGetDataSchema().load(request_params)
             user_obj = UserDetailsController()
             result = user_obj.get_user_details(request_data=request_params)
             response = {

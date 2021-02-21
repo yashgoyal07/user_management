@@ -38,7 +38,7 @@ class MysqlModel(object):
                 conn.close()
 
     # for data-query language commands
-    def dql_queries(self, query, query_params):
+    def dql_queries(self, query, query_params=None):
         conn = None
         try:
             conn = self.get_connection()
