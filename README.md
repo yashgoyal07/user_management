@@ -26,8 +26,8 @@ It is user management api by which we can pull or store the users information.
 # database setup
 1. Create database in mysql with name 'usr_mgmt'.
    > CREATE DATABASE usr_mgmt;
-1. copy the CREATE_USER_TABLE query from helpers/mysql_queries.py in the repo and make table in 'usr_mgmt' database with name 'user'.
-   > CREATE TABLE user ('copied query');
+1. Make the 'user' table using query from :-
+   > src/helpers/mysql_queries.py#L7-L24
    
 # run
 1. run the below command.
