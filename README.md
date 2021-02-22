@@ -32,10 +32,9 @@ It is user management system by which another system can pull or store the infor
 # run
 1. run the below command.
    > python3 src/views/views.py
-
-## api
-   > http://127.0.0.1:5000/user
+1. go to following link.
+   > http://127.0.0.1:5000
 
 # postman Collection
-1. import collection in postman from following link.
+1. import collection in Postman from following link.
    > https://www.getpostman.com/collections/8501374bd7e9189fd60f
