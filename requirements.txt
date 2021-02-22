@@ -1,0 +1,5 @@
+coloredlogs==15.0
+Flask==1.1.2
+marshmallow==3.10.0
+mysql-connector-python==8.0.23
+pip~=20.0.2
