@@ -1,5 +1,5 @@
 # user_management
-It is user management system by which another system can pull or store the information.
+It is user management api by which we can pull or store the users information.
 
 # pre-requisite
 * Python Version - 3.8.5
