@@ -16,9 +16,9 @@ It is user management system by which another system can pull or store the infor
    > source venv/bin/activate
 1. Install requirements.txt file
    > pip install -r requirements.txt
-1. export path of src directory into PYTHONPATH.
+1. export path of src directory into PYTHONPATH. For Example: 
    > export PYTHONPATH=:/home/yashgoyal07/Music/user_management/src
-1. export mysql root and password.
+1. export your mysql root and password.
    > export MYSQL_USER = '#####'
    > 
    > export MYSQL_PASSWORD = '######'
