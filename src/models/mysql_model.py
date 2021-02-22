@@ -1,10 +1,13 @@
-import logging, coloredlogs
+import coloredlogs
+import logging
+
 import mysql.connector
-from helpers.utils import get_environment
+
 from configs.mysql_config import MysqlConfig
+from helpers.utils import get_environment
 
+# for colored logging
 logger = logging.getLogger(__name__)
-
 coloredlogs.install(level='DEBUG')
 
 
@@ -20,7 +23,7 @@ class MysqlModel(object):
                                              password=self.instance_config.get('password'))
         return connection
 
-    # for data-modification language commands
+    # for data-modification
     def dml_queries(self, query, query_params):
         conn = None
         try:
@@ -37,7 +40,7 @@ class MysqlModel(object):
             if conn:
                 conn.close()
 
-    # for data-query language commands
+    # for data-query
     def dql_queries(self, query, query_params=None):
         conn = None
         try:

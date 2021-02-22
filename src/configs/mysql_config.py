@@ -1,22 +1,28 @@
+import os
+
+mysql_user = os.environ.get("MYSQL_USER", "")
+mysql_password = os.environ.get("MYSQL_PASSWORD", "")
+
+
 class MysqlConfig(object):
     INSTANCE_CONFIG = {
         'local': {
             'host': 'localhost',
             'port': 3306,
-            'username': 'root',
-            'password': 'YasMys@1'
+            'username': mysql_user,
+            'password': mysql_password
         },
         'qa': {
             'host': '##.##.##.##',
             'port': 0000,
-            'username': '####',
-            'password': '########'
+            'username': mysql_user,
+            'password': mysql_password
         },
         'prod': {
             'host': '##.##.##.##',
             'port': 0000,
-            'username': '####',
-            'password': '########'
+            'username': mysql_user,
+            'password': mysql_password
         }
     }
 

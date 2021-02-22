@@ -3,7 +3,7 @@ import logging
 import traceback
 from application import app
 from flask import request
-from helpers.constants import *
+from helpers.constants import REQUEST_FAILED, REQUEST_SUCCESS
 from validation.user_detail_schema import UserDetailSchema, UserGetDataSchema
 from controllers.user_details_controller import UserDetailsController
 from marshmallow import ValidationError
@@ -19,16 +19,22 @@ def home():
 
 @app.route('/user', methods=['POST', 'GET'])
 def user():
+
+    # for creating or updating user data
     if request.method == 'POST':
-        response = {}
+        response = {
+            "status": REQUEST_FAILED,
+            "error": "Something Went Wrong. check your payload"
+        }
         try:
             user_data = request.get_json()
-            user_data = UserDetailSchema().load(user_data)
-            user_obj = UserDetailsController()
-            user_obj.create_user(user_data=user_data)
-            response = {
-                "status": REQUEST_SUCCESS,
-            }
+            user_data = UserDetailSchema().load(user_data)  # data validation
+            if user_data:
+                user_obj = UserDetailsController()
+                user_obj.create_user(user_data=user_data)
+                response = {
+                    "status": REQUEST_SUCCESS,
+                }
         except ValidationError as err:
             logging.error(err)
             response = {
@@ -40,21 +46,27 @@ def user():
             logging.error(traceback.print_exc())
             response = {
                 "status": REQUEST_FAILED,
-                "errors": "Something Went Wrong. Please Contact Support."
+                "errors": "Something Went Wrong"
             }
         finally:
             return response
-    elif request.method == 'GET':
-        response = {}
+
+    # for retrieving user data
+    if request.method == 'GET':
+        response = {
+            "status": REQUEST_FAILED,
+            "error": "Something Went Wrong. check your payload"
+        }
         try:
             request_params = request.get_json()
-            request_params = UserGetDataSchema().load(request_params)
-            user_obj = UserDetailsController()
-            result = user_obj.get_user_details(request_data=request_params)
-            response = {
-                "status": REQUEST_SUCCESS,
-                "result": result
-            }
+            request_params = UserGetDataSchema().load(request_params)  # data validation
+            if request_params:
+                user_obj = UserDetailsController()
+                result = user_obj.get_user_details(request_data=request_params)
+                response = {
+                    "status": REQUEST_SUCCESS,
+                    "result": result
+                }
         except ValidationError as err:
             logging.error(err)
             response = {
@@ -66,7 +78,7 @@ def user():
             logging.error(traceback.print_exc())
             response = {
                 "status": REQUEST_FAILED,
-                "comment": "Something Went Wrong. Please Contact Support."
+                "comment": "Something Went Wrong"
             }
         finally:
             return response

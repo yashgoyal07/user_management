@@ -63,18 +63,19 @@ class UserDetailSchema(Schema):
 
 
 class DOBSchema(Schema):
-    start_date = fields.Str(validate=validate_date, missing=None)
-    end_date = fields.Str(validate=validate_date, missing=None)
+    start_date = fields.Str(required=True, validate=validate_date)
+    end_date = fields.Str(required=True, validate=validate_date)
 
 
 class FilterSchema(Schema):
-    user_ids = fields.List(fields.Str(validate=validate.Length(max=100)), missing=[])
-    dob = fields.Nested(DOBSchema, missing={})
+    user_ids = fields.List(fields.Str(validate=validate.Length(max=100)))
+    dob = fields.Nested(DOBSchema)
 
 
 class UserGetDataSchema(Schema):
-    properties = fields.List(fields.Str(), missing=[])
-    filters = fields.Nested(FilterSchema, missing={})
+    properties = fields.List(fields.Str(), required=True)
+    filters = fields.Nested(FilterSchema)
+    batch_size = fields.Int(validate=validate.Range(min=1, max=100))
 
     class Meta:
         unknown = 'EXCLUDE'

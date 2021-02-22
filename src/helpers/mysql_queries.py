@@ -1,13 +1,6 @@
 from configs.mysql_config import MysqlConfig
 
-INSERT_DATA_QUERY_TEMPLATE = """INSERT INTO {DATABASE_NAME}.{TABLE_NAME} """
-
-CREATE_USER_QUERY_TEMPLATE = INSERT_DATA_QUERY_TEMPLATE \
-    .format(DATABASE_NAME=MysqlConfig.DATABASE_NAME,
-            TABLE_NAME=MysqlConfig.USER_TABLE_NAME
-            )
-
-CREATE_USER_QUERY = CREATE_USER_QUERY_TEMPLATE + """({columns}) VALUES({params}) ON DUPLICATE KEY UPDATE"""
+CREATE_USER_QUERY = f"""INSERT INTO {MysqlConfig.DATABASE_NAME}.{MysqlConfig.USER_TABLE_NAME} """ + """({columns}) VALUES({params}) ON DUPLICATE KEY UPDATE"""
 
 GET_USER_DATA_QUERY = """SELECT {columns}""" + f""" FROM {MysqlConfig.DATABASE_NAME}.{MysqlConfig.USER_TABLE_NAME}"""
 
