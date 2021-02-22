@@ -19,9 +19,9 @@ It is user management api by which we can pull or store the users information.
 1. export path of src directory into PYTHONPATH. For Example: 
    > export PYTHONPATH=:/home/yashgoyal07/Music/user_management/src
 1. export your mysql user and password.
-   > export MYSQL_USER = '#####'
+   > export MYSQL_USER='#####'
    > 
-   > export MYSQL_PASSWORD = '######'
+   > export MYSQL_PASSWORD='######'
 
 # database setup
 1. Create database in mysql with name 'usr_mgmt'.
